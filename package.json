@@ -1,0 +1,36 @@
+{
+  "name": "api-tests",
+  "version": "1.0.0",
+  "description": "Node API test example",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "nodemon --watch 'src/**/*.ts' --exec ts-node index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stefan-malcek/node-api-tests.git"
+  },
+  "keywords": [
+    "node",
+    "test",
+    "api"
+  ],
+  "author": "stefan.malcek1@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stefan-malcek/node-api-tests/issues"
+  },
+  "homepage": "https://github.com/stefan-malcek/node-api-tests#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.2",
+    "@types/node": "^14.0.1",
+    "typescript": "^3.9.2",
+    "nodemon": "^2.0.2",
+    "ts-node": "^8.5.4"
+  }
+}

@@ -1,10 +1,9 @@
-import {JsonController, Param, Body, Get, Post, Put, Delete} from "routing-controllers";
-import {ApiResponse} from "../Responses";
-import {ValidateNested} from "class-validator";
-import {Type} from "class-transformer";
-import {BookDto} from "../models/BookModel";
-import {ResponseSchema} from "routing-controllers-openapi";
-
+import {Type} from 'class-transformer';
+import {ValidateNested} from 'class-validator';
+import {JsonController, Param, Get} from 'routing-controllers';
+import {ResponseSchema} from 'routing-controllers-openapi';
+import {ApiResponse} from '../Responses';
+import {BookDto} from '../models/BookModel';
 
 class BooksResponse extends ApiResponse {
     @ValidateNested({each: true})
@@ -25,9 +24,9 @@ export class BookController {
         return new BooksResponse();
     }
 
-    @Get("/:id")
+    @Get('/:id')
     @ResponseSchema(BookResponse)
-    getOne(@Param("id") id: number) {
+    getOne(@Param('id') id: number) {
         return new BookResponse();
     }
 }

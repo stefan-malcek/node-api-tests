@@ -1,5 +1,5 @@
-import {IsInt, IsString, ValidateNested} from "class-validator";
-import {GenreDto} from "./GenreModel";
+import {IsInt, IsString, ValidateNested} from 'class-validator';
+import {GenreDto} from './GenreModel';
 
 export class BookDto {
     @IsInt()

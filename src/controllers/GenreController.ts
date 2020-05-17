@@ -1,9 +1,10 @@
-import {JsonController, Param, Get} from "routing-controllers";
-import {ApiResponse} from "../Responses";
-import {GenreDto} from "../models/GenreModel";
-import {ValidateNested} from "class-validator";
-import {Type} from "class-transformer";
-import {ResponseSchema} from "routing-controllers-openapi";
+import {Type} from 'class-transformer';
+import {ValidateNested} from 'class-validator';
+import {JsonController, Param, Get} from 'routing-controllers';
+import {ResponseSchema} from 'routing-controllers-openapi';
+import {ApiResponse} from '../Responses';
+import {GenreDto} from '../models/GenreModel';
+import {GenreService} from '../services/GenreService';
 
 class GenresResponse extends ApiResponse {
     @ValidateNested({each: true})
@@ -18,15 +19,25 @@ class GenreResponse extends ApiResponse {
 
 @JsonController('/genres')
 export class GenreController {
+    private service: GenreService;
+
+    constructor() {
+        this.service = new GenreService();
+    }
+
     @Get()
     @ResponseSchema(GenresResponse)
     getAll() {
-        return new GenresResponse();
+        const response = new GenresResponse();
+        response.data = this.service.getGenres();
+        return response;
     }
 
-    @Get("/:id")
+    @Get('/:id')
     @ResponseSchema(GenreResponse)
-    getOne(@Param("id") id: number) {
-        return new GenreResponse();
+    getOne(@Param('id') id: number) {
+        const response = new GenreResponse();
+        response.data = this.service.getGenre(id);
+        return response;
     }
 }

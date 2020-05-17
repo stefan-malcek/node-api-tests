@@ -1,13 +1,13 @@
-import "reflect-metadata"; // this shim is required
-import express from 'express';
-import { getFromContainer, MetadataStorage } from 'class-validator';
-import { getMetadataArgsStorage, useExpressServer} from "routing-controllers";
-import {defaultMetadataStorage} from "class-transformer/storage";
-import {routingControllersToSpec} from "routing-controllers-openapi";
-import swaggerUiExpress from 'swagger-ui-express';
+import {defaultMetadataStorage} from 'class-transformer/storage';
+import {getFromContainer, MetadataStorage} from 'class-validator';
 import {validationMetadatasToSchemas} from 'class-validator-jsonschema';
-import {BookController} from "./controllers/BookController";
-import {GenreController} from "./controllers/GenreController";
+import express from 'express';
+import {getMetadataArgsStorage, useExpressServer} from 'routing-controllers';
+import {routingControllersToSpec} from 'routing-controllers-openapi';
+import swaggerUiExpress from 'swagger-ui-express';
+import {BookController} from './controllers/BookController';
+import {GenreController} from './controllers/GenreController';
+import {ErrorHandlingMiddleware} from "./middlewares/ErrorHandlingMiddleware";
 
 export const run = async (callback: (app: any) => void) => {
     const application = express();
@@ -17,6 +17,7 @@ export const run = async (callback: (app: any) => void) => {
     // creates express app, registers all controller routes
     const routingControllersOptions = {
         controllers: [GenreController, BookController],
+        middlewares: [ErrorHandlingMiddleware],
         routePrefix: '/api',
         classTransformer: true,
         defaultErrorHandler: false,
@@ -47,7 +48,6 @@ export const run = async (callback: (app: any) => void) => {
         title: 'Book Shelf API',
         version: 'v1',
     });
-
 
     application.use('/swagger', swaggerUiExpress.serve, swaggerUiExpress.setup(spec));
 

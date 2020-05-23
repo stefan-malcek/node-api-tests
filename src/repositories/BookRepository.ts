@@ -1,5 +1,7 @@
 import {Genre} from "./GenreRepository";
+import {BookQuery} from "../models/BookModel";
 
+// Extract to entities folder.
 export class Book {
     id: number;
     name: string;
@@ -10,7 +12,7 @@ export class Book {
 }
 
 class BookRepository {
-    private static idCounter = 1;
+    private idCounter = 1;
     private books: Book[] = [
         {
             id: 1,
@@ -21,21 +23,28 @@ class BookRepository {
         },
     ];
 
-    public getBooks() {
+    public getBooks(query: BookQuery) {
+        // Omit pagination.
+
+        if (query.genreId) {
+            return this.books.filter(book => book.genre.id === query.genreId);
+        }
+
         return [...this.books];
     }
 
     public getBook(id: number) {
-        return this.books.find(genre => genre.id === id);
+        return this.books.find(book => book.id === id);
     }
 
-    public isIsbnUnique(isbn: string){
+    public isIsbnUnique(isbn: string) {
         return !this.books.some(book => book.isbn === isbn);
     }
 
     public createBook(book: Book) {
-        BookRepository.idCounter++;
-        book.id = BookRepository.idCounter;
+        this.idCounter++;
+
+        book.id = this.idCounter;
         book.created = new Date();
 
         this.books.push({...book});

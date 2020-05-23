@@ -1,4 +1,4 @@
-import {BookDto, CreateBookCommand, UpdateBookCommand} from '../models/BookModel';
+import {BookDto, BookQuery, CreateBookCommand, UpdateBookCommand} from '../models/BookModel';
 import BookRepository, {Book} from '../repositories/BookRepository';
 import GenreRepository from '../repositories/GenreRepository';
 import {NotFoundError} from '../errors/NotFoundError';
@@ -10,8 +10,8 @@ export class BookService {
     private bookRepository = BookRepository;
     private genreRepository = GenreRepository;
 
-    public getBooks(): BookDto[] {
-        return this.bookRepository.getBooks().map(toBookDto);
+    public getBooks(query: BookQuery): BookDto[] {
+        return this.bookRepository.getBooks(query).map(toBookDto);
     }
 
     public getBook(id: number): BookDto {

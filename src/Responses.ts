@@ -4,6 +4,7 @@ import {
     IsString,
     ValidateNested,
 } from 'class-validator';
+import * as StatusCode from './StatusCode';
 
 export class ApiResponse {
     @IsInt()
@@ -12,7 +13,7 @@ export class ApiResponse {
     @IsString()
     public message: string;
 
-    constructor(statusCode: number = 200, message: string = "Ok") {
+    constructor(statusCode: number = StatusCode.Ok, message: string = "Ok") {
         this.statusCode = statusCode;
         this.message = message;
     }
@@ -27,7 +28,7 @@ export class ApiErrorResponse extends ApiResponse {
     public errors: string[];
 
     constructor(name: string, errors: string[]) {
-        super(400, 'Validation failed, see \'errors\' for further details.');
+        super(StatusCode.BadRequest, 'Validation failed, see \'errors\' for further details.');
         this.name = name;
         this.errors = errors;
     }

@@ -6,6 +6,7 @@ import {
 import {NotFoundError} from '../errors/NotFoundError';
 import {ApiErrorResponse, ApiResponse} from '../Responses';
 import {ValidationError} from "../errors/ValidationError";
+import * as StatusCode from '../StatusCode';
 
 @Middleware({type: 'after'})
 export class ErrorHandlingMiddleware
@@ -25,11 +26,11 @@ export class ErrorHandlingMiddleware
                 break;
             case NotFoundError:
                 errResponse = new ApiResponse();
-                errResponse.statusCode = 404;
+                errResponse.statusCode = StatusCode.NotFound;
                 break;
             default:
                 errResponse = new ApiResponse();
-                errResponse.statusCode = 500;
+                errResponse.statusCode = StatusCode.InternalError;
         }
 
         errResponse.message = error.message;

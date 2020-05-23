@@ -1,9 +1,9 @@
 import {Type} from 'class-transformer';
 import {ValidateNested} from 'class-validator';
-import {JsonController, Param, Get, Body, Post, Put, Delete} from 'routing-controllers';
+import {JsonController, Param, Get, Body, Post, Put, Delete, Params, QueryParams} from 'routing-controllers';
 import {ResponseSchema} from 'routing-controllers-openapi';
 import {ApiResponse} from '../Responses';
-import {BookDto, CreateBookCommand, UpdateBookCommand} from '../models/BookModel';
+import {BookDto, BookQuery, CreateBookCommand, UpdateBookCommand} from '../models/BookModel';
 import {BookService} from "../services/BookService";
 
 class BooksResponse extends ApiResponse {
@@ -27,9 +27,9 @@ export class BookController {
 
     @Get()
     @ResponseSchema(BooksResponse)
-    getAll() {
+    getAll(@QueryParams()query: BookQuery) {
         const response = new BooksResponse();
-        response.data = this.service.getBooks();
+        response.data = this.service.getBooks(query);
         return response;
     }
 

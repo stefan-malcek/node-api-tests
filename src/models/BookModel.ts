@@ -48,3 +48,15 @@ export class BookDto {
     @ValidateNested()
     public genre: GenreDto;
 }
+
+export class BookQuery {
+    @IsInt()
+    public page: number = 1;
+
+    @IsInt()
+    public pageSize: number = 5;
+
+    @IsInt()
+    @IsOptional()
+    public genreId?: number;
+}

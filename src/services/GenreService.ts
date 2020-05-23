@@ -1,10 +1,11 @@
 import {GenreDto} from '../models/GenreModel';
 import GenreRepository from '../repositories/GenreRepository';
 import {NotFoundError} from '../errors/NotFoundError';
+import {toGenreDto} from "../mappings/GenreMapping";
 
 export class GenreService {
     public getGenres(): GenreDto[] {
-        return GenreRepository.getGenres();
+        return GenreRepository.getGenres().map(toGenreDto);
     }
 
     public getGenre(id: number): GenreDto {
@@ -13,6 +14,6 @@ export class GenreService {
             throw new NotFoundError("Genre", id);
         }
 
-        return genre;
+        return toGenreDto(genre);
     }
 }

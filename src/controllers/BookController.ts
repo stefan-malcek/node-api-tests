@@ -1,6 +1,16 @@
 import {Type} from 'class-transformer';
 import {ValidateNested} from 'class-validator';
-import {JsonController, Param, Get, Body, Post, Put, Delete, Params, QueryParams} from 'routing-controllers';
+import {
+    JsonController,
+    Param,
+    Get,
+    Body,
+    Post,
+    Put,
+    Delete,
+    QueryParams,
+    Authorized
+} from 'routing-controllers';
 import {ResponseSchema} from 'routing-controllers-openapi';
 import {ApiResponse} from '../Responses';
 import {BookDto, BookQuery, CreateBookCommand, UpdateBookCommand} from '../models/BookModel';
@@ -17,6 +27,7 @@ class BookResponse extends ApiResponse {
     data: BookDto;
 }
 
+@Authorized()
 @JsonController('/books')
 export class BookController {
     private service: BookService;
@@ -42,6 +53,7 @@ export class BookController {
     }
 
     @Post()
+    @Authorized('ADMIN')
     @ResponseSchema(BookResponse)
     create(@Body() createBook: CreateBookCommand) {
         const response = new BookResponse();
@@ -50,6 +62,7 @@ export class BookController {
     }
 
     @Put('/:id')
+    @Authorized('ADMIN')
     @ResponseSchema(BookResponse)
     update(@Param('id') id: number, @Body() updateBook: UpdateBookCommand) {
         const response = new BookResponse();
@@ -58,6 +71,7 @@ export class BookController {
     }
 
     @Delete('/:id')
+    @Authorized('ADMIN')
     @ResponseSchema(BookResponse)
     delete(@Param('id') id: number) {
         this.service.deleteBook(id);

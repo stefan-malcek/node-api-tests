@@ -2,12 +2,34 @@ import {defaultMetadataStorage} from 'class-transformer/storage';
 import {getFromContainer, MetadataStorage} from 'class-validator';
 import {validationMetadatasToSchemas} from 'class-validator-jsonschema';
 import express from 'express';
-import {getMetadataArgsStorage, useExpressServer} from 'routing-controllers';
+import {Action, getMetadataArgsStorage, useExpressServer} from 'routing-controllers';
 import {routingControllersToSpec} from 'routing-controllers-openapi';
 import swaggerUiExpress from 'swagger-ui-express';
 import {BookController} from './controllers/BookController';
 import {GenreController} from './controllers/GenreController';
 import {ErrorHandlingMiddleware} from "./middlewares/ErrorHandlingMiddleware";
+import JwtManager from "./services/JwtManager";
+
+const authorizationChecker = async (action: Action, roles: string[]) => {
+    const { authorization } = action.request.headers;
+    if (!authorization) {
+        return false;
+    }
+
+    const jwtToken = authorization.replace('Bearer ', '');
+    const token = JwtManager.decodeToken(jwtToken);
+    if (!token) {
+        return false;
+    }
+
+    // You should verify userId.
+
+    if (!roles.length) {
+        return true;
+    }
+
+   return roles.some(role => token.role === role);
+};
 
 export const run = async (callback: (app: any) => void) => {
     const application = express();
@@ -16,6 +38,7 @@ export const run = async (callback: (app: any) => void) => {
 
     // creates express app, registers all controller routes
     const routingControllersOptions = {
+        authorizationChecker,
         controllers: [GenreController, BookController],
         middlewares: [ErrorHandlingMiddleware],
         routePrefix: '/api',
@@ -34,7 +57,6 @@ export const run = async (callback: (app: any) => void) => {
     });
 
     const storage = getMetadataArgsStorage();
-
     const spec = routingControllersToSpec(storage, routingControllersOptions, {
         components: {
             schemas,

@@ -12,7 +12,7 @@ import {
     Authorized
 } from 'routing-controllers';
 import {OpenAPI, ResponseSchema} from 'routing-controllers-openapi';
-import {ApiResponse} from '../Responses';
+import {ApiMetadata, ApiResponse} from '../Responses';
 import {BookDto, BookQuery, CreateBookCommand, UpdateBookCommand} from '../models/BookModel';
 import {BookService} from "../services/BookService";
 
@@ -29,7 +29,7 @@ class BookResponse extends ApiResponse {
 
 @Authorized()
 @OpenAPI({
-    security: [{ bearerAuth: [] }],
+    security: [{bearerAuth: []}],
 })
 @JsonController('/books')
 export class BookController {
@@ -42,8 +42,10 @@ export class BookController {
     @Get()
     @ResponseSchema(BooksResponse)
     getAll(@QueryParams()query: BookQuery) {
+        const [books, totalItems] = this.service.getBooks(query);
         const response = new BooksResponse();
-        response.data = this.service.getBooks(query);
+        response.data = books;
+        response.metadata = new ApiMetadata(query.pageSize, query.page, totalItems);
         return response;
     }
 

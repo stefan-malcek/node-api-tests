@@ -10,8 +10,9 @@ export class BookService {
     private bookRepository = BookRepository;
     private genreRepository = GenreRepository;
 
-    public getBooks(query: BookQuery): BookDto[] {
-        return this.bookRepository.getBooks(query).map(toBookDto);
+    public getBooks(query: BookQuery): [BookDto[], number] {
+        const [books, totalItems] = this.bookRepository.getBooks(query);
+        return [books.map(toBookDto), totalItems];
     }
 
     public getBook(id: number): BookDto {

@@ -1,10 +1,10 @@
-import {BusinessError} from "./index";
+import {BusinessError, ValdiationFailed} from "./index";
 
 export class ValidationError extends Error {
     public description: string;
 
     constructor(error: BusinessError) {
-        super("Invalid body, check 'errors' property for more info.");
+        super(ValdiationFailed.description);
         this.name = error.name;
         this.description = error.description;
     }

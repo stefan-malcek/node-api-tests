@@ -1,10 +1,31 @@
 import {Type} from 'class-transformer';
 import {
-    IsInt,
+    IsInt, IsNumber, IsOptional,
     IsString,
     ValidateNested,
 } from 'class-validator';
 import * as StatusCode from './StatusCode';
+import {ValdiationFailed} from "./errors";
+
+export class ApiMetadata {
+    @IsNumber()
+    @IsOptional()
+    public totalItems: number;
+
+    @IsNumber()
+    @IsOptional()
+    public pageSize: number;
+
+    @IsNumber()
+    @IsOptional()
+    public page: number;
+
+    constructor(pageSize?: number, page?: number, totalItems?: number) {
+        this.pageSize = pageSize;
+        this.page = page;
+        this.totalItems = totalItems;
+    }
+}
 
 export class ApiResponse {
     @IsInt()
@@ -13,9 +34,14 @@ export class ApiResponse {
     @IsString()
     public message: string;
 
-    constructor(statusCode: number = StatusCode.Ok, message: string = "Ok") {
+    @IsOptional()
+    @ValidateNested()
+    public metadata: ApiMetadata;
+
+    constructor(statusCode: number = StatusCode.Ok, message: string = "Ok", metadata: ApiMetadata = null) {
         this.statusCode = statusCode;
         this.message = message;
+        this.metadata = metadata;
     }
 }
 
@@ -28,7 +54,7 @@ export class ApiErrorResponse extends ApiResponse {
     public errors: string[];
 
     constructor(name: string, errors: string[]) {
-        super(StatusCode.BadRequest, 'Validation failed, see \'errors\' for further details.');
+        super(StatusCode.BadRequest, ValdiationFailed.description);
         this.name = name;
         this.errors = errors;
     }

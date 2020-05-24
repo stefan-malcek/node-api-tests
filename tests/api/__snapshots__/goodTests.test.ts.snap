@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`API: /api/books CREATE: SNAPSHOT OK 1`] = `
+Object {
+  "data": Object {
+    "created": "2020-05-01T10:42:56.784Z",
+    "genre": Object {
+      "id": 1,
+      "name": "Science fiction",
+    },
+    "id": 2,
+    "isbn": "978-3-16-148410-5",
+    "name": "I'll do it tomorrow",
+  },
+  "message": "Ok",
+  "metadata": null,
+  "statusCode": 200,
+}
+`;
+
+exports[`API: /api/books DELETE: SNAPSHOT OK 1`] = `
+Object {
+  "message": "Ok",
+  "metadata": null,
+  "statusCode": 200,
+}
+`;
+
+exports[`API: /api/books GET MANY: SNAPSHOT OK 1`] = `
+Object {
+  "data": Array [
+    Object {
+      "created": "2020-02-28T14:45:21.464Z",
+      "genre": Object {
+        "id": 1,
+        "name": "Science fiction",
+      },
+      "id": 1,
+      "isbn": "978-3-16-148410-0",
+      "name": "The mighty Hadodrak.",
+    },
+    Object {
+      "created": "2020-03-28T14:12:21.444Z",
+      "genre": Object {
+        "id": 5,
+        "name": "Detective",
+      },
+      "id": 2,
+      "isbn": "978-3-16-148410-1",
+      "name": "Who took greek yogurt from the fridge?",
+    },
+    Object {
+      "created": "2020-04-28T12:45:21.214Z",
+      "genre": Object {
+        "id": 4,
+        "name": "Horror",
+      },
+      "id": 3,
+      "isbn": "978-3-16-148410-2",
+      "name": "API testing nightmare.",
+    },
+  ],
+  "message": "Ok",
+  "metadata": Object {
+    "page": 1,
+    "pageSize": 3,
+    "totalItems": 4,
+  },
+  "statusCode": 200,
+}
+`;
+
+exports[`API: /api/books GET ONE: SNAPSHOT OK 1`] = `
+Object {
+  "data": Object {
+    "created": "2020-04-28T12:45:21.214Z",
+    "genre": Object {
+      "id": 4,
+      "name": "Horror",
+    },
+    "id": 3,
+    "isbn": "978-3-16-148410-2",
+    "name": "API testing nightmare.",
+  },
+  "message": "Ok",
+  "metadata": null,
+  "statusCode": 200,
+}
+`;
+
+exports[`API: /api/books UPDATE: SNAPSHOT OK 1`] = `
+Object {
+  "data": Object {
+    "created": null,
+    "genre": Object {
+      "id": 4,
+      "name": "Romance",
+    },
+    "id": 4,
+    "isbn": "878-3-16-148410-2",
+    "lastModified": "2020-05-01T10:42:56.784Z",
+    "name": "Friday night",
+  },
+  "message": "Ok",
+  "metadata": null,
+  "statusCode": 200,
+}
+`;

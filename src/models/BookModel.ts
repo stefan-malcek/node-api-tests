@@ -54,9 +54,13 @@ export class BookQuery {
     public page: number = 1;
 
     @IsInt()
-    public pageSize: number = 5;
+    public pageSize: number = 3;
 
     @IsInt()
     @IsOptional()
     public genreId?: number;
+
+    @IsString()
+    @IsOptional()
+    public search?: string;
 }

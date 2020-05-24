@@ -3,12 +3,13 @@ import {
     ExpressErrorMiddlewareInterface,
     Middleware,
 } from 'routing-controllers';
-import {NotFoundError} from '../errors/NotFoundError';
-import {ApiErrorResponse, ApiResponse} from '../Responses';
-import {ValidationError} from "../errors/ValidationError";
 import * as StatusCode from '../StatusCode';
-import {UnauthorizedError} from "../errors/UnathorizedError";
 import {AccessDeniedError} from "routing-controllers/error/AccessDeniedError";
+import {ApiErrorResponse, ApiResponse} from "../Responses";
+import {ValdiationFailed} from "../errors";
+import {ValidationError} from "../errors/ValidationError";
+import {UnauthorizedError} from "../errors/UnathorizedError";
+import {NotFoundError} from "../errors/NotFoundError";
 
 @Middleware({type: 'after'})
 export class ErrorHandlingMiddleware
@@ -16,14 +17,12 @@ export class ErrorHandlingMiddleware
     public error(error: any, request: any, response: any) {
         let errResponse;
 
-        console.log(error);
-
         switch (error.constructor) {
             case BadRequestError:
-               const errors = error.errors
-                    ? this.extractValidationErrors({ children: error.errors })
+                const errors = error.errors
+                    ? this.extractValidationErrors({children: error.errors})
                     : [];
-                errResponse = new ApiErrorResponse('VALIDATION_ERROR', errors);
+                errResponse = new ApiErrorResponse(ValdiationFailed.name, errors);
                 break;
             case ValidationError:
                 errResponse = new ApiErrorResponse(error.name, [error.description]);

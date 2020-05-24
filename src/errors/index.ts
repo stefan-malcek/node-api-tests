@@ -3,6 +3,11 @@ export interface BusinessError {
     description: string
 }
 
+export const ValdiationFailed : BusinessError = {
+    name: 'VALIDATION_FAILED',
+    description: 'Validation failed, see \'errors\' for further details.'
+}
+
 export const InvalidCredentials: BusinessError = {
     name: 'INVALID_CREDENTIALS',
     description: 'Username or password is invalid.'

@@ -11,7 +11,7 @@ import {
     QueryParams,
     Authorized
 } from 'routing-controllers';
-import {ResponseSchema} from 'routing-controllers-openapi';
+import {OpenAPI, ResponseSchema} from 'routing-controllers-openapi';
 import {ApiResponse} from '../Responses';
 import {BookDto, BookQuery, CreateBookCommand, UpdateBookCommand} from '../models/BookModel';
 import {BookService} from "../services/BookService";
@@ -28,6 +28,9 @@ class BookResponse extends ApiResponse {
 }
 
 @Authorized()
+@OpenAPI({
+    security: [{ bearerAuth: [] }],
+})
 @JsonController('/books')
 export class BookController {
     private service: BookService;

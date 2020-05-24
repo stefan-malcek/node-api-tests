@@ -7,12 +7,16 @@ import {NotFoundError} from '../errors/NotFoundError';
 import {ApiErrorResponse, ApiResponse} from '../Responses';
 import {ValidationError} from "../errors/ValidationError";
 import * as StatusCode from '../StatusCode';
+import {UnauthorizedError} from "../errors/UnathorizedError";
+import {AccessDeniedError} from "routing-controllers/error/AccessDeniedError";
 
 @Middleware({type: 'after'})
 export class ErrorHandlingMiddleware
     implements ExpressErrorMiddlewareInterface {
     public error(error: any, request: any, response: any) {
         let errResponse;
+
+        console.log(error);
 
         switch (error.constructor) {
             case BadRequestError:
@@ -23,6 +27,14 @@ export class ErrorHandlingMiddleware
                 break;
             case ValidationError:
                 errResponse = new ApiErrorResponse(error.name, [error.description]);
+                break;
+            case UnauthorizedError:
+                errResponse = new ApiResponse();
+                errResponse.statusCode = StatusCode.Unauthorized;
+                break;
+            case AccessDeniedError:
+                errResponse = new ApiResponse();
+                errResponse.statusCode = StatusCode.Forbidden;
                 break;
             case NotFoundError:
                 errResponse = new ApiResponse();

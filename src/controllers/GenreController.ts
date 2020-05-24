@@ -1,7 +1,7 @@
 import {Type} from 'class-transformer';
 import {ValidateNested} from 'class-validator';
 import {JsonController, Param, Get, Authorized} from 'routing-controllers';
-import {ResponseSchema} from 'routing-controllers-openapi';
+import {OpenAPI, ResponseSchema} from 'routing-controllers-openapi';
 import {ApiResponse} from '../Responses';
 import {GenreDto} from '../models/GenreModel';
 import {GenreService} from '../services/GenreService';
@@ -18,6 +18,9 @@ class GenreResponse extends ApiResponse {
 }
 
 @Authorized()
+@OpenAPI({
+    security: [{ bearerAuth: [] }],
+})
 @JsonController('/genres')
 export class GenreController {
     private service: GenreService;

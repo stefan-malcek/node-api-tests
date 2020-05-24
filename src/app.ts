@@ -5,21 +5,23 @@ import express from 'express';
 import {Action, getMetadataArgsStorage, useExpressServer} from 'routing-controllers';
 import {routingControllersToSpec} from 'routing-controllers-openapi';
 import swaggerUiExpress from 'swagger-ui-express';
+import {AuthController} from "./controllers/AuthController";
 import {BookController} from './controllers/BookController';
 import {GenreController} from './controllers/GenreController';
 import {ErrorHandlingMiddleware} from "./middlewares/ErrorHandlingMiddleware";
 import JwtManager from "./services/JwtManager";
+import {UnauthorizedError} from "./errors/UnathorizedError";
 
 const authorizationChecker = async (action: Action, roles: string[]) => {
     const { authorization } = action.request.headers;
     if (!authorization) {
-        return false;
+        throw new UnauthorizedError();
     }
 
     const jwtToken = authorization.replace('Bearer ', '');
     const token = JwtManager.decodeToken(jwtToken);
     if (!token) {
-        return false;
+        throw new UnauthorizedError();
     }
 
     // You should verify userId.
@@ -39,7 +41,7 @@ export const run = async (callback: (app: any) => void) => {
     // creates express app, registers all controller routes
     const routingControllersOptions = {
         authorizationChecker,
-        controllers: [GenreController, BookController],
+        controllers: [GenreController, BookController, AuthController],
         middlewares: [ErrorHandlingMiddleware],
         routePrefix: '/api',
         classTransformer: true,

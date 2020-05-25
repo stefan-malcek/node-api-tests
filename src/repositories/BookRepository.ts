@@ -9,6 +9,7 @@ export class Book {
     lastModified?: Date;
     isbn: string;
     genre: Genre;
+    url?: string;
 }
 
 class BookRepository {

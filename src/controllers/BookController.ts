@@ -60,9 +60,9 @@ export class BookController {
     @Post()
     @Authorized('ADMIN')
     @ResponseSchema(BookResponse)
-    create(@Body() createBook: CreateBookCommand) {
+    async create(@Body() createBook: CreateBookCommand) {
         const response = new BookResponse();
-        response.data = this.service.createBook(createBook);
+        response.data = await this.service.createBook(createBook);
         return response;
     }
 

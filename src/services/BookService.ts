@@ -5,10 +5,16 @@ import {NotFoundError} from '../errors/NotFoundError';
 import {ValidationError} from "../errors/ValidationError";
 import {InvalidGender, IsbnNotUnique} from "../errors";
 import {mapIntoBook, toBook, toBookDto} from "../mappings/BookMapping";
+import {IsbnApiService} from "./IsbnApiService";
 
 export class BookService {
     private bookRepository = BookRepository;
     private genreRepository = GenreRepository;
+    private isbnApiService: IsbnApiService;
+
+    constructor() {
+        this.isbnApiService = new IsbnApiService();
+    }
 
     public getBooks(query: BookQuery): [BookDto[], number] {
         const [books, totalItems] = this.bookRepository.getBooks(query);
@@ -24,7 +30,7 @@ export class BookService {
         return toBookDto(book);
     }
 
-    public createBook(createBook: CreateBookCommand): BookDto {
+    public async createBook(createBook: CreateBookCommand): Promise<BookDto> {
         const genre = this.genreRepository.getGenre(createBook.genreId);
         if (!genre) {
             throw new ValidationError(InvalidGender);
@@ -36,6 +42,12 @@ export class BookService {
         }
 
         let book = toBook(createBook);
+
+        const bookInfo = await this.isbnApiService.getBookInfo(createBook.isbn);
+        if (bookInfo) {
+            book.url = bookInfo.uri;
+        }
+
         book.genre = genre;
 
         book = this.bookRepository.createBook(book);

@@ -20,5 +20,10 @@ export const toBookDto = (book: Book): BookDto => {
     bookDto.genre = book.genre;
     bookDto.created = book.created;
     bookDto.lastModified = book.lastModified;
+
+    if (book.url) {
+        bookDto.url = book.url;
+    }
+
     return bookDto;
 };

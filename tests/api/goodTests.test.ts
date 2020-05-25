@@ -1,9 +1,9 @@
 import * as StatusCode from '../../src/StatusCode';
 import {API_START_TIMEOUT} from '../constants';
-import {TestApiClient} from "../TestApiClient";
-import {InvalidGender, IsbnNotUnique, ValdiationFailed} from "../../src/errors";
-import {generateString} from "./utils";
-import {bookQueryFactory, createBookFactory, updateBookFactory} from "./factories/bookFactory";
+import {TestApiClient} from '../TestApiClient';
+import {InvalidGender, IsbnNotUnique, ValdiationFailed} from '../../src/errors';
+import {generateString} from './utils';
+import {bookQueryFactory, createBookFactory, updateBookFactory} from './factories/bookFactory';
 
 let client: TestApiClient;
 
@@ -90,7 +90,7 @@ describe(`API: ${BASE_URL}`, () => {
     test('CREATE: SNAPSHOT OK', async () => {
         client.setAdminToken();
 
-        const response = await client.callPost({data: createBookFactory()});
+        const response = await client.callPost({data: createBookFactory({isbn: '978-3-319-25557-6'})});
 
         expect(response.body).toMatchSnapshot();
         expect(response.status).toBe(StatusCode.Ok);

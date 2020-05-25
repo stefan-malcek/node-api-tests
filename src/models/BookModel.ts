@@ -1,5 +1,6 @@
 import {IsDate, IsDefined, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, ValidateNested} from 'class-validator';
 import {GenreDto} from './GenreModel';
+import {isString} from "util";
 
 export class CreateBookCommand {
     @IsString()
@@ -47,6 +48,10 @@ export class BookDto {
 
     @ValidateNested()
     public genre: GenreDto;
+
+    @IsString()
+    @IsOptional()
+    public url?: string;
 }
 
 export class BookQuery {

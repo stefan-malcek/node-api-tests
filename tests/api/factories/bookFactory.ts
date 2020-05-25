@@ -16,3 +16,5 @@ export const updateBookFactory = ({
                            } = {}) => {
     return {name, genreId};
 }
+
+export const mockedIsbnApiResponse = {uri: 'https://we.did.it'};

@@ -3,7 +3,8 @@ import {API_START_TIMEOUT} from '../constants';
 import {TestApiClient} from '../TestApiClient';
 import {InvalidGender, IsbnNotUnique, ValdiationFailed} from '../../src/errors';
 import {generateString} from './utils';
-import {bookQueryFactory, createBookFactory, updateBookFactory} from './factories/bookFactory';
+import {bookQueryFactory, createBookFactory, mockedIsbnApiResponse, updateBookFactory} from './factories/bookFactory';
+import {IsbnApiService} from "../../src/services/IsbnApiService";
 
 let client: TestApiClient;
 
@@ -88,9 +89,12 @@ describe(`API: ${BASE_URL}`, () => {
      * CREATE
      ************************************************************************** */
     test('CREATE: SNAPSHOT OK', async () => {
+        jest.spyOn(IsbnApiService.prototype, 'getBookInfo')
+            .mockImplementation(() => Promise.resolve(mockedIsbnApiResponse));
         client.setAdminToken();
 
-        const response = await client.callPost({data: createBookFactory({isbn: '978-3-319-25557-6'})});
+        const response = await client.callPost({data: createBookFactory({isbn: '978-3-319-25557-7'})});
+        jest.restoreAllMocks();
 
         expect(response.body).toMatchSnapshot();
         expect(response.status).toBe(StatusCode.Ok);

@@ -1,8 +1,8 @@
-import * as http from "http";
-import {PORT} from "../../config";
-import {dispose, run} from "../../src/app";
-import supertest from "supertest";
-import {API_START_TIMEOUT} from "../constants";
+import * as http from 'http';
+import {PORT} from '../../config';
+import {dispose, run} from '../../src/app';
+import supertest from 'supertest';
+import {API_START_TIMEOUT} from '../constants';
 
 let application;
 let server: http.Server;
@@ -19,8 +19,8 @@ beforeAll(async done => {
         server = app.listen(PORT);
 
         const loginData = {
-            username: "admin",
-            password: "pass",
+            username: 'admin',
+            password: 'pass',
         };
 
         const result = await supertest(application)
@@ -36,30 +36,30 @@ beforeAll(async done => {
 
 const booksResponse = [
     {
-        "id": 1,
-        "name": "The mighty Hadodrak.",
-        "isbn": "978-3-16-148410-0",
-        "genre": {
-            "id": 1,
-            "name": "Science fiction"
+        'id': 1,
+        'name': 'The mighty Hadodrak.',
+        'isbn': '978-3-16-148410-0',
+        'genre': {
+            'id': 1,
+            'name': 'Science fiction'
         },
     },
     {
-        "id": 2,
-        "name": "Who took greek yogurt from the fridge?",
-        "isbn": "978-3-16-148410-1",
-        "genre": {
-            "id": 5,
-            "name": "Detective"
+        'id': 2,
+        'name': 'Who took greek yogurt from the fridge?',
+        'isbn': '978-3-16-148410-1',
+        'genre': {
+            'id': 5,
+            'name': 'Detective'
         },
     },
     {
-        "id": 3,
-        "name": "API testing nightmare.",
-        "isbn": "978-3-16-148410-2",
-        "genre": {
-            "id": 4,
-            "name": "Horror"
+        'id': 3,
+        'name': 'API testing nightmare.',
+        'isbn': '978-3-16-148410-2',
+        'genre': {
+            'id': 4,
+            'name': 'Horror'
         },
     }
 ]
@@ -128,8 +128,8 @@ describe('API: books', () => {
         const genreId = 1;
         const newBook = {
             genreId,
-            name: "Book 1",
-            isbn: '978-3-16-148410-8',
+            name: 'Book 1',
+            isbn: '978-3-319-25557-6'
         }
 
         const result = await supertest(application)
@@ -145,7 +145,11 @@ describe('API: books', () => {
 
         delete newBook.genreId;
 
-        expect(responseData.data).toEqual({...newBook, genre: {id: genreId}});
+        expect(responseData.data).toEqual({
+            ...newBook,
+            genre: {id: genreId},
+            url: "http://link.springer.com/book/10.1007%2F978-3-319-25559-0"
+        });
 
         done();
     });
@@ -157,7 +161,7 @@ describe('API: books', () => {
         const genreId = 1;
         const updatedBook = {
             genreId,
-            name: "Updated Book",
+            name: 'Updated Book',
         }
 
         const result = await supertest(application)
@@ -185,8 +189,8 @@ describe('API: books', () => {
 
     test(`PUT: ${PATH}/{invalidId} - test not fount`, async done => {
         const updatedBook = {
-            genreId : 2,
-            name: "Updated Book",
+            genreId: 2,
+            name: 'Updated Book',
         }
 
         const result = await supertest(application)

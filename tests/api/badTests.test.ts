@@ -183,6 +183,21 @@ describe('API: books', () => {
         done();
     });
 
+    test(`PUT: ${PATH}/{invalidId} - test not fount`, async done => {
+        const updatedBook = {
+            genreId : 2,
+            name: "Updated Book",
+        }
+
+        const result = await supertest(application)
+            .put(`${PATH}/454`)
+            .send(updatedBook)
+            .set('Authorization', `Bearer ${jwtToken}`);
+        expect(result.status).toBe(404);
+
+        done();
+    });
+
     /****************************************************************************
      * DELETE
      ***************************************************************************/

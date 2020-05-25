@@ -44,10 +44,6 @@ class BookRepository {
         },
     ];
 
-    constructor() {
-        console.log('ctor');
-    }
-
     public getBooks(query: BookQuery) {
         let books = [...this.books];
 

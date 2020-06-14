@@ -33,62 +33,68 @@ describe(`API: ${BASE_URL}`, () => {
     /** **************************************************************************
      * GET MANY
      ************************************************************************** */
-    test('GET MANY: SNAPSHOT OK', async () => {
+    test('GET MANY: SNAPSHOT OK', async (done) => {
         client.setUserToken();
 
         const response = await client.callGetMany();
 
         expectSnapshotOk(response);
+        done();
     });
 
     [
         ['filter by genreId', bookQueryFactory({genreId: 1}), 2],
         ['filter by search', bookQueryFactory({search: 'Hadodrak'}), 1],
     ].forEach(([label, query, totalItems]) => {
-        test(`GET MANY: ${label}`, async () => {
+        test(`GET MANY: ${label}`, async (done) => {
             client.setUserToken();
 
             const response = await client.callGetMany({queryParams: query});
 
             expectItemsCountOk(response, totalItems);
+            done();
         });
     })
 
-    test('GET MANY: UNAUTHORIZED', async () => {
+    test('GET MANY: UNAUTHORIZED', async (done) => {
         const response = await client.callGetMany();
 
         expectUnauthorized(response);
+        done();
     });
 
     /** **************************************************************************
      * GET ONE
      ************************************************************************** */
-    test('GET ONE: SNAPSHOT OK', async () => {
+    test('GET ONE: SNAPSHOT OK', async (done) => {
         client.setUserToken();
 
         const response = await client.callGetOne(QUERY_BOOK_ID);
 
         expectSnapshotOk(response);
+        done();
     });
 
-    test('GET ONE: UNAUTHORIZED', async () => {
+    test('GET ONE: UNAUTHORIZED', async (done) => {
         const response = await client.callGetOne(QUERY_BOOK_ID);
 
         expectUnauthorized(response);
+        done();
     });
 
-    test('GET ONE: NOT FOUND', async () => {
+    test('GET ONE: NOT FOUND', async (done) => {
         client.setUserToken();
 
         const response = await client.callGetOne(INVALID_BOOK_ID);
 
         expectNotFound(response);
+        done();
     });
 
     /** **************************************************************************
      * CREATE
      ************************************************************************** */
-    test('CREATE: SNAPSHOT OK', async () => {
+    test('CREATE: SNAPSHOT OK', async (done) => {
         jest.spyOn(IsbnApiService.prototype, 'getBookInfo')
             .mockImplementation(() => Promise.resolve(mockedIsbnApiResponse));
         client.setAdminToken();
@@ -98,6 +104,7 @@ describe(`API: ${BASE_URL}`, () => {
         });
 
         expectSnapshotOk(response);
+        done();
     });
 
     [
@@ -106,133 +113,148 @@ describe(`API: ${BASE_URL}`, () => {
         ['isbn null', createBookFactory({isbn: null})],
         ['isbn too long', createBookFactory({isbn: generateString(18)})],
     ].forEach(([label, data]) => {
-        test(`CREATE: BAD REQUEST, error: ${label}`, async () => {
+        test(`CREATE: BAD REQUEST, error: ${label}`, async (done) => {
             client.setAdminToken();
 
             const response = await client.callPost({data});
 
             expectBadRequest(response, ValidationFailed);
+            done();
         });
     });
 
-    test('CREATE: BAD REQUEST, error: isbn not unique', async () => {
+    test('CREATE: BAD REQUEST, error: isbn not unique', async (done) => {
         client.setAdminToken();
         const data = createBookFactory({isbn: '978-3-16-148410-0'})
 
         const response = await client.callPost({data});
 
         expectBadRequest(response, IsbnNotUnique);
+        done();
     });
 
-    test('CREATE: BAD REQUEST, error: invalid genre', async () => {
+    test('CREATE: BAD REQUEST, error: invalid genre', async (done) => {
         client.setAdminToken();
         const data = createBookFactory({genreId: 4654})
 
         const response = await client.callPost({data});
 
         expectBadRequest(response, InvalidGenre);
+        done();
     });
 
-    test('CREATE: UNAUTHORIZED', async () => {
+    test('CREATE: UNAUTHORIZED', async (done) => {
         const response = await client.callPost({data: createBookFactory()});
 
         expectUnauthorized(response);
+        done();
     });
 
-    test('CREATE: FORBIDDEN', async () => {
+    test('CREATE: FORBIDDEN', async (done) => {
         client.setUserToken();
 
         const response = await client.callPost({data: createBookFactory()});
 
         expectForbidden(response);
+        done();
     });
 
     /** **************************************************************************
      * UPDATE
      ************************************************************************** */
-    test('UPDATE: SNAPSHOT OK', async () => {
+    test('UPDATE: SNAPSHOT OK', async (done) => {
         client.setAdminToken();
 
         const response = await client.callPut(EDIT_BOOK_ID, {data: updateBookFactory()});
 
         expectSnapshotOk(response);
+        done();
     });
 
     [
         ['name null', createBookFactory({name: null})],
         ['name too long', createBookFactory({name: generateString(51)})]
     ].forEach(([label, data]) => {
-        test(`UPDATE: BAD REQUEST, error: ${label}`, async () => {
+        test(`UPDATE: BAD REQUEST, error: ${label}`, async (done) => {
             client.setAdminToken();
 
             const response = await client.callPut(EDIT_BOOK_ID, {data});
 
             expectBadRequest(response, ValidationFailed);
+            done();
         });
     });
 
-    test('UPDATE: BAD REQUEST, error: invalid genre', async () => {
+    test('UPDATE: BAD REQUEST, error: invalid genre', async (done) => {
         client.setAdminToken();
         const data = updateBookFactory({genreId: 4654})
 
         const response = await client.callPut(EDIT_BOOK_ID, {data});
 
         expectBadRequest(response, InvalidGenre);
+        done();
     });
 
-    test('UPDATE: UNAUTHORIZED', async () => {
+    test('UPDATE: UNAUTHORIZED', async (done) => {
         const response = await client.callPut(EDIT_BOOK_ID, {data: updateBookFactory()});
 
         expectUnauthorized(response);
+        done();
     });
 
-    test('UPDATE: FORBIDDEN', async () => {
+    test('UPDATE: FORBIDDEN', async (done) => {
         client.setUserToken();
 
         const response = await client.callPut(EDIT_BOOK_ID, {data: updateBookFactory()});
 
         expectForbidden(response);
+        done();
     });
 
-    test('UPDATE: NOT FOUND', async () => {
+    test('UPDATE: NOT FOUND', async (done) => {
         client.setAdminToken();
 
         const response = await client.callPut(INVALID_BOOK_ID, {data: updateBookFactory()});
 
         expectNotFound(response);
+        done();
     });
 
     /** **************************************************************************
      * DELETE
      ************************************************************************** */
-    test('DELETE: SNAPSHOT OK', async () => {
+    test('DELETE: SNAPSHOT OK', async (done) => {
         client.setAdminToken();
 
         const response = await client.callDelete(DELETE_BOOK_ID);
 
         expectSnapshotOk(response);
+        done();
     });
 
-    test('DELETE: UNAUTHORIZED', async () => {
+    test('DELETE: UNAUTHORIZED', async (done) => {
         const response = await client.callDelete(DELETE_BOOK_ID);
 
         expectUnauthorized(response);
+        done();
     });
 
-    test('DELETE: FORBIDDEN', async () => {
+    test('DELETE: FORBIDDEN', async (done) => {
         client.setUserToken();
 
         const response = await client.callDelete(DELETE_BOOK_ID);
 
         expectForbidden(response);
+        done();
     });
 
-    test('DELETE: NOT FOUND', async () => {
+    test('DELETE: NOT FOUND', async (done) => {
         client.setAdminToken();
 
         const response = await client.callDelete(INVALID_BOOK_ID);
 
         expectNotFound(response);
+        done();
     });
 });
 

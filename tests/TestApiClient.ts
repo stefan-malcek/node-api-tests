@@ -111,9 +111,7 @@ export class TestApiClient {
      * Cleanup resources here.
      */
     public async dispose() {
-        if (this.server) {
-            this.server.close();
-        }
+        this.server?.close();
 
         await dispose();
         mockdate.reset();

@@ -1,3 +1,5 @@
+export const SCIENCE_FICTION_ID = 1
+
 export const bookQueryFactory = ({
   genreId = undefined,
   search = undefined
@@ -8,7 +10,7 @@ export const bookQueryFactory = ({
 export const createBookFactory = ({
   name = "I'll do it tomorrow",
   isbn = '978-3-16-148410-5',
-  genreId = 1
+  genreId = SCIENCE_FICTION_ID
 } = {}) => {
     return {name, isbn, genreId};
 }

@@ -3,7 +3,7 @@ import BookRepository, {Book} from '../repositories/BookRepository';
 import GenreRepository from '../repositories/GenreRepository';
 import {NotFoundError} from '../errors/NotFoundError';
 import {ValidationError} from "../errors/ValidationError";
-import {InvalidGender, IsbnNotUnique} from "../errors";
+import {InvalidGenre, IsbnNotUnique} from "../errors";
 import {mapIntoBook, toBook, toBookDto} from "../mappings/BookMapping";
 import {IsbnApiService} from "./IsbnApiService";
 
@@ -33,7 +33,7 @@ export class BookService {
     public async createBook(createBook: CreateBookCommand): Promise<BookDto> {
         const genre = this.genreRepository.getGenre(createBook.genreId);
         if (!genre) {
-            throw new ValidationError(InvalidGender);
+            throw new ValidationError(InvalidGenre);
         }
 
         const isIsbnUnique = this.bookRepository.isIsbnUnique(createBook.isbn);
@@ -63,7 +63,7 @@ export class BookService {
 
         const genre = this.genreRepository.getGenre(updateBook.genreId);
         if (!genre) {
-            throw new ValidationError(InvalidGender);
+            throw new ValidationError(InvalidGenre);
         }
 
         mapIntoBook(updateBook, book);

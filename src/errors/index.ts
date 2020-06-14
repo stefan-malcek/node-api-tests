@@ -13,5 +13,5 @@ export const InvalidCredentials: BusinessError = {
     description: 'Username or password is invalid.'
 }
 
-export const InvalidGender: BusinessError = {name: 'INVALID_GENDER', description: "Gender doesn't exist."}
+export const InvalidGenre: BusinessError = {name: 'INVALID_GENRE', description: "Genre doesn't exist."}
 export const IsbnNotUnique: BusinessError = {name: 'ISBN_NOT_UNIQUE', description: 'ISBN already exists.'}

@@ -1,10 +1,17 @@
-import * as StatusCode from '../../src/StatusCode';
 import {API_START_TIMEOUT} from '../constants';
 import {TestApiClient} from '../TestApiClient';
-import {InvalidGender, IsbnNotUnique, ValidationFailed} from '../../src/errors';
+import {InvalidGenre, IsbnNotUnique, ValidationFailed} from '../../src/errors';
 import {generateString} from './utils';
 import {bookQueryFactory, createBookFactory, mockedIsbnApiResponse, updateBookFactory} from './factories/bookFactory';
-import {IsbnApiService} from "../../src/services/IsbnApiService";
+import {IsbnApiService} from '../../src/services/IsbnApiService';
+import {
+    expectBadRequest,
+    expectForbidden,
+    expectItemsCountOk,
+    expectNotFound,
+    expectSnapshotOk,
+    expectUnauthorized
+} from '../expects';
 
 let client: TestApiClient;
 
@@ -22,7 +29,6 @@ beforeAll(async done => {
     done();
 }, API_START_TIMEOUT);
 
-
 describe(`API: ${BASE_URL}`, () => {
     /** **************************************************************************
      * GET MANY
@@ -32,8 +38,7 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callGetMany();
 
-        expect(response.body).toMatchSnapshot();
-        expect(response.status).toBe(StatusCode.Ok);
+        expectSnapshotOk(response);
     });
 
     [
@@ -45,14 +50,14 @@ describe(`API: ${BASE_URL}`, () => {
 
             const response = await client.callGetMany({queryParams: query});
 
-            expect(response.body.metadata.totalItems).toEqual(totalItems);
+            expectItemsCountOk(response, totalItems);
         });
     })
 
     test('GET MANY: UNAUTHORIZED', async () => {
         const response = await client.callGetMany();
 
-        expect(response.status).toBe(StatusCode.Unauthorized);
+        expectUnauthorized(response);
     });
 
     /** **************************************************************************
@@ -63,14 +68,13 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callGetOne(QUERY_BOOK_ID);
 
-        expect(response.body).toMatchSnapshot();
-        expect(response.status).toBe(StatusCode.Ok);
+        expectSnapshotOk(response);
     });
 
     test('GET ONE: UNAUTHORIZED', async () => {
         const response = await client.callGetOne(QUERY_BOOK_ID);
 
-        expect(response.status).toBe(StatusCode.Unauthorized);
+        expectUnauthorized(response);
     });
 
     test('GET ONE: NOT FOUND', async () => {
@@ -78,7 +82,7 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callGetOne(INVALID_BOOK_ID);
 
-        expect(response.status).toBe(StatusCode.NotFound);
+        expectNotFound(response);
     });
 
     /** **************************************************************************
@@ -93,8 +97,7 @@ describe(`API: ${BASE_URL}`, () => {
             data: createBookFactory({isbn: '978-3-319-25557-7'})
         });
 
-        expect(response.body).toMatchSnapshot();
-        expect(response.status).toBe(StatusCode.Ok);
+        expectSnapshotOk(response);
     });
 
     [
@@ -108,8 +111,7 @@ describe(`API: ${BASE_URL}`, () => {
 
             const response = await client.callPost({data});
 
-            expect(response.body.name).toEqual(ValidationFailed.name);
-            expect(response.status).toBe(StatusCode.BadRequest);
+            expectBadRequest(response, ValidationFailed);
         });
     });
 
@@ -119,8 +121,7 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callPost({data});
 
-        expect(response.body.name).toEqual(IsbnNotUnique.name);
-        expect(response.status).toBe(StatusCode.BadRequest);
+        expectBadRequest(response, IsbnNotUnique);
     });
 
     test('CREATE: BAD REQUEST, error: invalid genre', async () => {
@@ -129,14 +130,13 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callPost({data});
 
-        expect(response.body.name).toEqual(InvalidGender.name);
-        expect(response.status).toBe(StatusCode.BadRequest);
+        expectBadRequest(response, InvalidGenre);
     });
 
     test('CREATE: UNAUTHORIZED', async () => {
         const response = await client.callPost({data: createBookFactory()});
 
-        expect(response.status).toBe(StatusCode.Unauthorized);
+        expectUnauthorized(response);
     });
 
     test('CREATE: FORBIDDEN', async () => {
@@ -144,7 +144,7 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callPost({data: createBookFactory()});
 
-        expect(response.status).toBe(StatusCode.Forbidden);
+        expectForbidden(response);
     });
 
     /** **************************************************************************
@@ -155,8 +155,7 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callPut(EDIT_BOOK_ID, {data: updateBookFactory()});
 
-        expect(response.body).toMatchSnapshot();
-        expect(response.status).toBe(StatusCode.Ok);
+        expectSnapshotOk(response);
     });
 
     [
@@ -168,8 +167,7 @@ describe(`API: ${BASE_URL}`, () => {
 
             const response = await client.callPut(EDIT_BOOK_ID, {data});
 
-            expect(response.body.name).toEqual(ValidationFailed.name);
-            expect(response.status).toBe(StatusCode.BadRequest);
+            expectBadRequest(response, ValidationFailed);
         });
     });
 
@@ -179,14 +177,13 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callPut(EDIT_BOOK_ID, {data});
 
-        expect(response.body.name).toEqual(InvalidGender.name);
-        expect(response.status).toBe(StatusCode.BadRequest);
+        expectBadRequest(response, InvalidGenre);
     });
 
     test('UPDATE: UNAUTHORIZED', async () => {
         const response = await client.callPut(EDIT_BOOK_ID, {data: updateBookFactory()});
 
-        expect(response.status).toBe(StatusCode.Unauthorized);
+        expectUnauthorized(response);
     });
 
     test('UPDATE: FORBIDDEN', async () => {
@@ -194,7 +191,7 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callPut(EDIT_BOOK_ID, {data: updateBookFactory()});
 
-        expect(response.status).toBe(StatusCode.Forbidden);
+        expectForbidden(response);
     });
 
     test('UPDATE: NOT FOUND', async () => {
@@ -202,7 +199,7 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callPut(INVALID_BOOK_ID, {data: updateBookFactory()});
 
-        expect(response.status).toBe(StatusCode.NotFound);
+        expectNotFound(response);
     });
 
     /** **************************************************************************
@@ -213,14 +210,13 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callDelete(DELETE_BOOK_ID);
 
-        expect(response.body).toMatchSnapshot();
-        expect(response.status).toBe(StatusCode.Ok);
+        expectSnapshotOk(response);
     });
 
     test('DELETE: UNAUTHORIZED', async () => {
         const response = await client.callDelete(DELETE_BOOK_ID);
 
-        expect(response.status).toBe(StatusCode.Unauthorized);
+        expectUnauthorized(response);
     });
 
     test('DELETE: FORBIDDEN', async () => {
@@ -228,7 +224,7 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callDelete(DELETE_BOOK_ID);
 
-        expect(response.status).toBe(StatusCode.Forbidden);
+        expectForbidden(response);
     });
 
     test('DELETE: NOT FOUND', async () => {
@@ -236,7 +232,7 @@ describe(`API: ${BASE_URL}`, () => {
 
         const response = await client.callDelete(INVALID_BOOK_ID);
 
-        expect(response.status).toBe(StatusCode.NotFound);
+        expectNotFound(response);
     });
 });
 

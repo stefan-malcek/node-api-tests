@@ -5,7 +5,7 @@ import {
     ValidateNested,
 } from 'class-validator';
 import * as StatusCode from './StatusCode';
-import {ValdiationFailed} from "./errors";
+import {ValidationFailed} from "./errors";
 
 export class ApiMetadata {
     @IsNumber()
@@ -54,7 +54,7 @@ export class ApiErrorResponse extends ApiResponse {
     public errors: string[];
 
     constructor(name: string, errors: string[]) {
-        super(StatusCode.BadRequest, ValdiationFailed.description);
+        super(StatusCode.BadRequest, ValidationFailed.description);
         this.name = name;
         this.errors = errors;
     }

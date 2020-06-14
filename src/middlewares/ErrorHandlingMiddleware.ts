@@ -6,7 +6,7 @@ import {
 import * as StatusCode from '../StatusCode';
 import {AccessDeniedError} from "routing-controllers/error/AccessDeniedError";
 import {ApiErrorResponse, ApiResponse} from "../Responses";
-import {ValdiationFailed} from "../errors";
+import {ValidationFailed} from "../errors";
 import {ValidationError} from "../errors/ValidationError";
 import {UnauthorizedError} from "../errors/UnathorizedError";
 import {NotFoundError} from "../errors/NotFoundError";
@@ -22,7 +22,7 @@ export class ErrorHandlingMiddleware
                 const errors = error.errors
                     ? this.extractValidationErrors({children: error.errors})
                     : [];
-                errResponse = new ApiErrorResponse(ValdiationFailed.name, errors);
+                errResponse = new ApiErrorResponse(ValidationFailed.name, errors);
                 break;
             case ValidationError:
                 errResponse = new ApiErrorResponse(error.name, [error.description]);

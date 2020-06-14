@@ -1,7 +1,7 @@
 import * as StatusCode from '../../src/StatusCode';
 import {API_START_TIMEOUT} from '../constants';
 import {TestApiClient} from '../TestApiClient';
-import {InvalidGender, IsbnNotUnique, ValdiationFailed} from '../../src/errors';
+import {InvalidGender, IsbnNotUnique, ValidationFailed} from '../../src/errors';
 import {generateString} from './utils';
 import {bookQueryFactory, createBookFactory, mockedIsbnApiResponse, updateBookFactory} from './factories/bookFactory';
 import {IsbnApiService} from "../../src/services/IsbnApiService";
@@ -50,8 +50,6 @@ describe(`API: ${BASE_URL}`, () => {
     })
 
     test('GET MANY: UNAUTHORIZED', async () => {
-        client.clearToken();
-
         const response = await client.callGetMany();
 
         expect(response.status).toBe(StatusCode.Unauthorized);
@@ -70,8 +68,6 @@ describe(`API: ${BASE_URL}`, () => {
     });
 
     test('GET ONE: UNAUTHORIZED', async () => {
-        client.clearToken();
-
         const response = await client.callGetOne(QUERY_BOOK_ID);
 
         expect(response.status).toBe(StatusCode.Unauthorized);
@@ -93,8 +89,9 @@ describe(`API: ${BASE_URL}`, () => {
             .mockImplementation(() => Promise.resolve(mockedIsbnApiResponse));
         client.setAdminToken();
 
-        const response = await client.callPost({data: createBookFactory({isbn: '978-3-319-25557-7'})});
-        jest.restoreAllMocks();
+        const response = await client.callPost({
+            data: createBookFactory({isbn: '978-3-319-25557-7'})
+        });
 
         expect(response.body).toMatchSnapshot();
         expect(response.status).toBe(StatusCode.Ok);
@@ -111,7 +108,7 @@ describe(`API: ${BASE_URL}`, () => {
 
             const response = await client.callPost({data});
 
-            expect(response.body.name).toEqual(ValdiationFailed.name);
+            expect(response.body.name).toEqual(ValidationFailed.name);
             expect(response.status).toBe(StatusCode.BadRequest);
         });
     });
@@ -137,8 +134,6 @@ describe(`API: ${BASE_URL}`, () => {
     });
 
     test('CREATE: UNAUTHORIZED', async () => {
-        client.clearToken();
-
         const response = await client.callPost({data: createBookFactory()});
 
         expect(response.status).toBe(StatusCode.Unauthorized);
@@ -173,7 +168,7 @@ describe(`API: ${BASE_URL}`, () => {
 
             const response = await client.callPut(EDIT_BOOK_ID, {data});
 
-            expect(response.body.name).toEqual(ValdiationFailed.name);
+            expect(response.body.name).toEqual(ValidationFailed.name);
             expect(response.status).toBe(StatusCode.BadRequest);
         });
     });
@@ -189,8 +184,6 @@ describe(`API: ${BASE_URL}`, () => {
     });
 
     test('UPDATE: UNAUTHORIZED', async () => {
-        client.clearToken();
-
         const response = await client.callPut(EDIT_BOOK_ID, {data: updateBookFactory()});
 
         expect(response.status).toBe(StatusCode.Unauthorized);
@@ -225,8 +218,6 @@ describe(`API: ${BASE_URL}`, () => {
     });
 
     test('DELETE: UNAUTHORIZED', async () => {
-        client.clearToken();
-
         const response = await client.callDelete(DELETE_BOOK_ID);
 
         expect(response.status).toBe(StatusCode.Unauthorized);
@@ -248,6 +239,13 @@ describe(`API: ${BASE_URL}`, () => {
         expect(response.status).toBe(StatusCode.NotFound);
     });
 });
+
+afterEach(done => {
+    jest.restoreAllMocks();
+    client.clearToken();
+    done();
+});
+
 
 afterAll(async done => {
     await client.dispose();

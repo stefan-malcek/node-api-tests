@@ -3,7 +3,7 @@ export interface BusinessError {
     description: string
 }
 
-export const ValdiationFailed : BusinessError = {
+export const ValidationFailed : BusinessError = {
     name: 'VALIDATION_FAILED',
     description: 'Validation failed, see \'errors\' for further details.'
 }
